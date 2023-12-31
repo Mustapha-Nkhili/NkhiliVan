@@ -1,0 +1,46 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark light;
+  color: #161616;
+  background-color: #FFF7ED;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --main-clr: #FF8C38;
+  --main-text-clr: #161616;
+
+  --primary-white-clr: #FFF7ED;
+  --white-clr: #fff;
+  --black-clr: #000;
+
+
+  --footer-clr: #AAAAAA;
+  --error-clr: #ff0033;
+
+  --footer-bg: #252525;
+
+  --dashboard-income-bg: #FFEAD0;
+  --dashboard-reviews-bg: #FFDDB2;
+
+  --header-height: 88px;
+  --footer-height: 73px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #FFF7ED;
+    background-color: #161616;
+  }
+}
