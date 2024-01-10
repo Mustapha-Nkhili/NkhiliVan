@@ -8,10 +8,10 @@ export default function Footer() {
     <footer>
       <div className="copy-me">
         Made with <FontAwesomeIcon icon={faHeart} className="heart" /> by{" "}
-        <Link to="https://www.linkedin.com/in/mustapha-nkhili-35280a280/"><span>Mustapha Nkhili</span></Link>
+        <Link to="https://www.linkedin.com/in/mustapha-nkhili-35280a280/" target="_blank"><span>Mustapha Nkhili</span></Link>
       </div>
       <span>
-        Ⓒ {year} <span className="company-name">VanLife</span> All Right
+        Ⓒ {year} <span className="company-name">NkhiliVan</span> All Right
         Reserved
       </span>
     </footer>

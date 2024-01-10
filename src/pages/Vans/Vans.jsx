@@ -1,22 +1,27 @@
-import { Link, useSearchParams, useLoaderData, Await, defer } from "react-router-dom";
+import {
+  Link,
+  useSearchParams,
+  useLoaderData,
+  Await,
+  defer,
+} from "react-router-dom";
 import { Suspense, useRef, useState } from "react";
 import { getVans } from "../../api";
 import VanSkeleton from "../../components/skeleton loading/VanSkeleton";
 
 export function loader() {
-  return defer({vans: getVans()});
+  return defer({ vans: getVans() });
 }
 
 export default function Vans() {
   const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData();
-  console.log(data)
+  console.log(data);
 
   const vansContainer = useRef();
   const [activeFilter, setActiveFilter] = useState(
     searchParams.get("type") || "all"
   );
-
 
   function handleFilter(filterBtn) {
     const filterValue = filterBtn.getAttribute("data-filter");
@@ -30,27 +35,26 @@ export default function Vans() {
     setSearchParams({});
   }
 
-
   return (
-    <main className="vans">
+    <main className="vans-page">
       <h1>Explore our van options</h1>
       <Suspense fallback={<VanSkeleton />}>
         <Await resolve={data.vans}>
           {(vans) => {
-              let vansType = [];
-              let seenTypes = new Set();
-            
-              for (let i = 0; i < vans.length; i++) {
-                let currentType = vans[i].type;
-            
-                // Check if the type is not already in the Set
-                if (!seenTypes.has(currentType)) {
-                  seenTypes.add(currentType);
-                  vansType.push(currentType);
-                }
-              }
+            let vansType = [];
+            let seenTypes = new Set();
 
-              const displayedVans =
+            for (let i = 0; i < vans.length; i++) {
+              let currentType = vans[i].type;
+
+              // Check if the type is not already in the Set
+              if (!seenTypes.has(currentType)) {
+                seenTypes.add(currentType);
+                vansType.push(currentType);
+              }
+            }
+
+            const displayedVans =
               activeFilter !== "all"
                 ? vans.filter((van) => van.type.toLowerCase() === activeFilter)
                 : vans;
@@ -81,7 +85,7 @@ export default function Vans() {
                     );
                   })}
                 </div>
-                <div className="vans-container" ref={vansContainer}>
+                <div className="vans" ref={vansContainer}>
                   {displayedVans.map((van) => {
                     let vanTypeBgClr =
                       van.type === "simple"

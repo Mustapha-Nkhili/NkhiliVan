@@ -38,7 +38,7 @@
   margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     color: #FFF7ED;
     background-color: #161616;

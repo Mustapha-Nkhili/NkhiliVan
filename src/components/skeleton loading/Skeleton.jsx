@@ -1,3 +1,3 @@
-export default function Skeleton({ className }) {
-  return <div className={`skeleton ${className}`}></div>;
+export default function Skeleton({ className, children }) {
+  return <div className={`skeleton ${className}`}>{children}</div>;
 }

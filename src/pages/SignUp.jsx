@@ -1,15 +1,19 @@
 import {
-  Link,
-  useLoaderData,
   Form,
+  Link,
   redirect,
   useActionData,
-  useNavigation,
+  useLoaderData,
   useNavigate,
+  useNavigation,
 } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useEffect } from "react";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  // sendEmailVerification,
+} from "firebase/auth";
 import { app } from "../firebaseConfig";
+import { useEffect, useState } from "react";
 
 export function loader({ request }) {
   const url = new URL(request.url);
@@ -23,8 +27,17 @@ export async function action({ request }) {
   const auth = getAuth(app);
 
   try {
-     await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem("loggedin", true);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    // sendEmailVerification(auth.currentUser).then(() => {
+    //   console.log("verfication sent");
+    // });
+    const user = userCredential.user;
+    console.log(user);
+    localStorage.setItem("loggedin", true);
     throw redirect("/host");
   } catch (error) {
     if (error.status !== 302) {
@@ -33,52 +46,52 @@ export async function action({ request }) {
     return error.status === 302 ? error.status : error.message;
   }
 }
-
-export default function Login() {
-  const navigate = useNavigate();
-  const message = useLoaderData().searchParams.get("message");
+export default function SignUp() {
   const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
+  const navigate = useNavigate();
   const error = useActionData();
+  const [signUpError, setSignUpError] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem("loggedin")) || error?.status === 302) {
+    if (JSON.parse(localStorage.getItem("loggedin")) || error === 302) {
       navigate(pathname, { replace: true });
+    } else if (typeof error === "string") {
+      let err = error.split(" ");
+      err.shift();
+      setSignUpError(err.join(" "));
     }
   }, [error, navigate, pathname]);
-
   return (
-    <main className="login container">
-      <h1>Sign in to your account</h1>
-      {message && <h2 className="login-message">{message}</h2>}
-      {error && error !== 302 && <h2 className="login-error">{error}</h2>}
+    <main className="sign-up container">
+      <h1>Sign up</h1>
+      {signUpError && <h2 className="sign-up-error">{signUpError}</h2>}
       <Form method="post" replace>
         <input
           type="email"
           name="email"
-          id="loginEmail"
-          className="login-email"
+          id="signUpEmail"
+          className="sign-up-email"
           placeholder="you@example.com"
           required
         />
         <input
           type="password"
           name="password"
-          id="loginPassword"
-          className="login-password"
+          id="signUpPassword"
+          className="sign-up-password"
           placeholder="Enter your password"
           required
         />
         <button
-          className="login-btn"
+          className="sign-up-btn"
           disabled={navigation.state === "submitting"}
         >
-          {navigation.state === "submitting" ? "Logging in..." : "Log in"}
+          {navigation.state === "submitting" ? "Signing up..." : "Sign up"}
         </button>
       </Form>
       <span>
-        Don't have an account?{" "}
-        <Link to={`/signup?redirectTo=${pathname}`}>Create one now</Link>
+        Already have an account? <Link to="/login">Sign in</Link>
       </span>
     </main>
   );

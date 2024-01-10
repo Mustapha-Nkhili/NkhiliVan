@@ -3,6 +3,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLoaderData, defer, Await } from "react-router-dom";
 import { getHostVans } from "../../api";
+import HostedVansSkeleton from "../../components/skeleton loading/hostedVansSkeleton";
 
 export function loader() {
   return defer({ vans: getHostVans() });
@@ -44,7 +45,7 @@ export default function Dashboard() {
             view all
           </Link>
         </div>
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<HostedVansSkeleton />}>
           <Await resolve={data.vans}>
             {(vans) => {
               return (
@@ -58,7 +59,7 @@ export default function Dashboard() {
                             <div className="van-name">{van.name}</div>
                             <span className="van-price">${van.price}/day</span>
                           </div>
-                          <button>Edit</button>
+                          <button className="edit-btn">Edit</button>
                         </Link>
                       </div>
                     );

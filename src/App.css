@@ -1,4 +1,16 @@
 /* General styles */
+body.no-scroll {
+  overflow: hidden;
+  position: relative;
+}
+body.no-scroll::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.219);
+}
+
 .container {
   width: 700px;
   max-width: 100%;
@@ -25,7 +37,9 @@ a {
   cursor: pointer;
 }
 
-.back-to-home-btn, .login-btn {
+.back-to-home-btn,
+.login-btn,
+.sign-up-btn {
   font-weight: 600;
   background-color: var(--main-clr);
   color: var(--white-clr);
@@ -40,6 +54,7 @@ a {
 /* General styles */
 
 /* skeleton loader */
+/* ----    General styles for Skeleton    ---- */
 .skeleton {
   background-color: #95928f;
   background: linear-gradient(100deg,
@@ -63,31 +78,39 @@ a {
   align-items: center;
 }
 
+.skeleton.van-img {
+  width: 100%;
+}
 
 .skeleton.img svg {
-  font-size: 100px;
   color: var(--white-clr);
 }
 
-.van .skeleton.van-img {
-  width: 100%;
-  height: 229.23px;
+/* ----    General styles for Skeleton    ---- */
+
+/* ----    vans page styles for Skeleton    ---- */
+.vans-page .van .skeleton.img svg {
+  font-size: 100px;
+}
+
+.vans-page .van .skeleton.van-img {
+  min-height: 229.23px;
   border-radius: 5px;
 }
 
 
-.van .skeleton.price-wrapper .skeleton {
+.vans-page .van .skeleton.price-wrapper .skeleton {
   display: block;
   color: var(--main-text-clr);
 }
 
-.van .price-wrapper .skeleton:last-child {
+.vans-page .van .price-wrapper .skeleton:last-child {
   font-size: 0.8rem;
   margin-top: -9px;
   text-align: right;
 }
 
-.van .skeleton.van-type {
+.vans-page .van .skeleton.van-type {
   display: block;
   width: 85.71px;
   height: 33.89px;
@@ -97,25 +120,28 @@ a {
   border-radius: 5px;
 }
 
-.van .skeleton.van-name {
+.vans-page .van .skeleton.van-name {
   width: 100px;
   height: 20px;
   margin: 5px 0;
   border-radius: 5px;
 }
 
-.van .price-wrapper .skeleton {
+.vans-page .van .price-wrapper .skeleton {
   width: 30px;
   height: 10px;
   margin: 3px 0;
   border-radius: 3px;
 }
 
-.van .price-wrapper .skeleton:last-child {
+.vans-page .van .price-wrapper .skeleton:last-child {
   margin-top: 5px;
   border-radius: 3px;
 }
 
+/* ----    vans page styles for Skeleton    ---- */
+
+/* ----    van details page styles for Skeleton    ---- */
 .van-details .skeleton.van-img {
   height: 500px;
 }
@@ -135,6 +161,34 @@ a {
   border-radius: 5px;
 }
 
+/* ----    van details page styles for Skeleton    ---- */
+
+/* ----    vans pages styles for Skeleton    ---- */
+.host .skeleton.van svg {
+  font-size: 20px;
+}
+
+.host .skeleton.van-name {
+  width: 117px;
+  border-radius: 3px;
+  height: 10px;
+}
+
+.host .skeleton.van-price {
+  margin-top: 5px !important;
+  width: 50px;
+  height: 7px;
+  border-radius: 2.5px;
+}
+
+.host .skeleton.edit-btn {
+  width: 50px;
+  height: 9px !important;
+  background-color: #95928f !important;
+  border-radius: 5px;
+}
+
+/* ----    dashboard vans styles for Skeleton    ---- */
 /* skeleton loader */
 /* Header */
 header {
@@ -145,23 +199,58 @@ header {
   box-shadow: 0px 7px 29px 0px rgba(0, 0, 0, 0.253);
 }
 
+@media screen and (max-width: 768px) {
+  header {
+    padding: 25px;
+    position: relative;
+  }
+}
+
 header .logo a {
   font-size: 1.563rem;
   font-weight: 900;
   color: var(--black-clr);
 }
 
-header nav ul {
+header nav ul:not(ul.user-list) {
   display: flex;
   align-items: center;
   gap: 10px;
   list-style: none;
 }
 
+body.no-scroll header nav ul li:not(ul.user-list li) {
+  pointer-events: none;
+}
 header nav ul a {
   font-weight: 600;
   color: var(--black-clr);
   transition: all 350ms ease-in-out;
+}
+
+header nav ul li a.log-in-uo-links {
+  display: block;
+  height: 35px;
+  padding: 10px;
+  line-height: 11px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+header nav ul li a.sign-up-link {
+  background-color: var(--black-clr);
+  color: var(--primary-white-clr);
+}
+
+header nav ul li a.login-in-link {
+  border: 1px solid var(--black-clr);
+  margin-left: 40px;
+}
+
+@media screen and (max-width: 620px) {
+  header nav ul li a.login-in-link {
+    margin-left: 5px;
+  }
 }
 
 header nav ul li a:hover {
@@ -172,34 +261,108 @@ header nav ul li a.active {
   color: var(--main-clr)
 }
 
-/* Header */
+header nav svg.bar,
+header nav svg.Xbar {
+  display: none;
+}
 
-/* Footer */
-footer {
-  position: relative;
-  bottom: 0;
-  color: var(--footer-clr);
-  background-color: var(--footer-bg);
+@media screen and (max-width: 580px) {
+  header nav ul {
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    transform: translateY(30px);
+    opacity: 0;
+    height: 0px;
+    padding: 30px;
+    background-color: var(--primary-white-clr);
+    transition: all 350ms ease-in-out;
+  }
+
+  header nav li {
+    display: none;
+    margin-bottom: 10px;
+    transition: all 1s ease-in-out;
+  }
+
+  header nav svg.bar,
+  header nav svg.Xbar {
+    display: block;
+    cursor: pointer;
+  }
+
+  header nav ul.clicked {
+    height: 300px;
+    opacity: 1;
+  }
+
+  header nav ul.clicked li {
+    display: block;
+  }
+
+  header nav ul li a.login-in-link {
+    margin: 50px 0 20px 0;
+  }
+}
+
+header nav .user-profile-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  width: 32px;
+  aspect-ratio: 1;
+  font-size: 18px;
+  position: relative;
+  margin-left: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--black-clr);
+  cursor: pointer;
+}
+
+header nav ul.user-list {
+  position: fixed;
+  right: -100%;
+  top: calc(var(--header-height));
+  display: block;
+  width: 232px;
+  height: calc(100vh - var(--header-height));
   padding: 10px;
+  background-color: #FFCC8D;
+  box-shadow: -8px 20px 30px rgba(12, 12, 12, 0.5);
+  z-index: 100;
+  list-style: none;
+  transition: all 350ms ease-in-out;
+}
+header nav ul.user-list.profile-clicked {
+  right: 0;
 }
 
-footer .copy-me {
-  margin-bottom: 5px;
-}
-
-footer .copy-me .heart,
-footer .copy-me span,
-footer .company-name {
+header nav ul.user-list li {
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--main-clr)
+  padding: 5px;
+  border-bottom: 1px solid black;
+  cursor: pointer;
 }
-
-footer .copy-me a {
-  text-decoration: none;
+header nav ul.user-list svg {
+  display: block;
+  margin-left: auto;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 350ms ease-in-out;
 }
-
-/* Footer */
+header nav ul.user-list svg:hover {
+  background-color: red;
+  color: wheat;
+}
+header nav ul.user-list svg:active {
+  scale: 0.4;
+}
+/* header nav ul.user-list svg */
+/* Header */
 
 /* Home page */
 .landing {
@@ -252,6 +415,7 @@ footer .copy-me a {
 
 /* About page */
 .about {
+  min-height: calc(100vh - var(--footer-height) - var(--header-height));
   background-color: var(--primary-white-clr);
 }
 
@@ -310,20 +474,21 @@ footer .copy-me a {
 /* About page */
 
 /* Vans page */
-.vans {
+.vans-page {
   background-color: var(--primary-white-clr);
+  min-height: calc(100vh - var(--footer-height) - var(--header-height));
   color: var(--main-text-clr);
   padding: 23px;
 }
 
-.vans .options {
+.vans-page .options {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   padding: 5px 0 57px;
 }
 
-.vans .options .option {
+.vans-page .options .option {
   width: 80px;
   height: 32px;
   font-size: 0.8rem;
@@ -340,65 +505,65 @@ footer .copy-me a {
   cursor: pointer;
 }
 
-.vans .options .option.active {
+.vans-page .options .option.active {
   background-color: black;
   color: #fff;
   pointer-events: none;
 }
 
 @media screen and (max-width: 480px) {
-  .vans .options {
+  .vans-page .options {
     gap: 10px;
   }
 
-  .vans .options .option {
+  .vans-page .options .option {
     width: 70px;
   }
 }
 
-.vans-container {
+.vans-page .vans {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(229.23px, 1fr));
   gap: 34px;
 }
 
-.vans-container .van {
+.vans-page .vans .van {
   background-color: var(--white-clr);
   border-radius: 6px;
   overflow: hidden;
 }
 
-.vans-container .van-img {
+.vans-page .vans .van-img {
   width: 100%;
   max-height: 300px;
 }
 
-.vans-container .van-name-price-wrapper {
+.vans-page .vans .van-name-price-wrapper {
   display: flex;
   justify-content: space-between;
   padding: 10px;
 }
 
-.vans-container .van-name {
+.vans-page .vans .van-name {
   font-size: 1.3rem;
   font-weight: 600;
   color: var(--main-text-clr);
 }
 
-.vans-container .price-wrapper {
+.vans-page .vans .price-wrapper {
   margin-bottom: 5px;
 }
 
-.vans-container .price-wrapper span {
+.vans-page .vans .price-wrapper span {
   display: block;
   color: var(--main-text-clr);
 }
 
-.vans-container .price-wrapper .price {
+.vans-page .vans .price-wrapper .price {
   font-weight: 700;
 }
 
-.vans-container .price-wrapper span:last-child {
+.vans-page .vans .price-wrapper span:last-child {
   font-size: 0.8rem;
   margin-top: -9px;
   text-align: right;
@@ -544,7 +709,7 @@ footer .copy-me a {
   color: #4d4d4d
 }
 
-.host .vans .van button {
+.host .vans .van .edit-btn {
   margin-left: auto;
   height: fit-content;
   font-weight: 600;
@@ -880,32 +1045,39 @@ footer .copy-me a {
 
 /* Not Found page */
 
-/* Login page */
-.login.container {
+/* Login and Sign up pages */
+.login.container,
+.sign-up.container {
   width: 500px;
 }
-.login {
+
+.login,
+.sign-up {
   padding: 20px;
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
   text-align: center;
 }
 
-.login h1 {
+.login h1,
+.sign-up h1 {
   font-size: 2.1rem;
 }
 
 .login .login-message,
-.login .login-error {
+.login .login-error,
+.sign-up .sign-up-error {
   font-size: 1rem;
   font-weight: 600;
   color: var(--error-clr);
 }
 
-.login input:first-child {
+.login input:first-child,
+.sign-up input:first-child {
   margin-top: 30px;
 }
 
-.login input {
+.login input,
+.sign-up input {
   padding: 15px;
   border-radius: 6px;
   width: 100%;
@@ -916,7 +1088,8 @@ footer .copy-me a {
   outline: none;
 }
 
-.login .login-btn {
+.login .login-btn,
+.sign-up .sign-up-btn {
   font-size: 1.05rem;
   font-weight: 700;
   padding: 16px;
@@ -924,16 +1097,46 @@ footer .copy-me a {
   transition: scale 350ms ease-in-out;
 }
 
-.login .login-btn:active {
+.login .login-btn:active,
+.sign-up .sign-up-btn:active {
   scale: 0.9;
 }
 
-.login span {
+.login span,
+.sign-up span {
   font-weight: 600;
 }
 
-.login span a {
+.login span a,
+.sign-up span a {
   color: var(--main-clr);
 }
 
-/* Login page */
+/* Login and Sign up pages */
+
+/* Footer */
+footer {
+  position: relative;
+  bottom: 0;
+  color: var(--footer-clr);
+  background-color: var(--footer-bg);
+  text-align: center;
+  padding: 10px;
+}
+
+footer .copy-me {
+  margin-bottom: 5px;
+}
+
+footer .copy-me .heart,
+footer .copy-me span,
+footer .company-name {
+  font-weight: 600;
+  color: var(--main-clr)
+}
+
+footer .copy-me a {
+  text-decoration: none;
+}
+
+/* Footer */

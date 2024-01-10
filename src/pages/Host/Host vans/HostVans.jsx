@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Link, useLoaderData, defer, Await } from "react-router-dom";
 import { getHostVans } from "../../../api";
+import HostedVansSkeleton from "../../../components/skeleton loading/hostedVansSkeleton";
 
 export function loader() {
   return defer({ vans: getHostVans() });
@@ -14,7 +15,7 @@ export default function Vans() {
         <h2>Your listed vans</h2>
         <Link to="/vans">view all</Link>
       </div>
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={<HostedVansSkeleton />}>
         <Await resolve={data.vans}>
           {(vans) => {
             return (
@@ -28,7 +29,7 @@ export default function Vans() {
                           <div className="van-name">{van.name}</div>
                           <span className="van-price">${van.price}/day</span>
                         </div>
-                        <button>Edit</button>
+                        <button className="edit-btn">Edit</button>
                       </Link>
                     </div>
                   );

@@ -1,10 +1,10 @@
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink, Outlet, useLoaderData } from "react-router-dom";
-import { getHostVans } from "../../../api";
+import { getVan } from "../../../api";
 
 export async function loader({ params }) {
-  return getHostVans(params.id);
+  return getVan(params.id);
 }
 export default function HostVanDetails() {
   const van = useLoaderData();

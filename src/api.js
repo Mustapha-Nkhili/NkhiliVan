@@ -1,51 +1,60 @@
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  query,
+  where,
+} from "firebase/firestore";
+
+import {db} from "./firebaseConfig"
+
+const vansCollectionRef = collection(db, "vans");
+
 export async function getVans() {
-  const res = await fetch("/api/vans");
-  if (!res.ok) {
-    throw {
-      message: "Failed to fetch the Vans",
-      statusText: res.statusText,
-      status: res.status,
-    };
-  }
-
-  const data = await res.json();
-  return data.vans;
-}
-
-export async function getHostVans(id) {
   try {
-    const response = await fetch(`/api/host/vans${id ? `/${id}` : ""}`);
+    const vansSnapshot = await getDocs(vansCollectionRef);
+    const vans = vansSnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
 
-    if (!response.ok) {
-      throw {
-        message: "Failed to fetch the hosted Vans",
-        statusText: response.statusText,
-        status: response.status,
-      };
-    }
-
-    const data = await response.json();
-    return data.vans
+    return vans;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return { error: "An error occurred while fetching data." };
+    throw { error: "An error occurred while fetching data." };
   }
 }
 
-export async function loginUser(creds) {
-  setTimeout((resolve) => resolve , 60000);
-  const res = await fetch("/api/login",
-      { method: "post", body: JSON.stringify(creds) }
-  )
-  const data = await res.json()
+export async function getVan(id) {
+  try {
+    const docRef = doc(db, "vans", id);
+    const vanSnapshot = await getDoc(docRef);
 
-  if (!res.ok) {
-      throw {
-          message: data.message,
-          statusText: res.statusText,
-          status: res.status
-      }
+    return {
+      ...vanSnapshot.data(),
+      id: vanSnapshot.id,
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw { error: "An error occurred while fetching data." };
   }
+}
 
-  return data
+export async function getHostVans() {
+  try {
+    const Query = query(vansCollectionRef, where("hostId", "==", 123));
+    const hostVansSnapshot = await getDocs(Query);
+    const hostVans = hostVansSnapshot.docs.map((doc) => {
+      return {
+        ...doc.data(),
+        id: doc.id,
+      };
+    });
+
+    return hostVans;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw { error: "An error occurred while fetching data." };
+  }
 }

@@ -21,11 +21,12 @@ import HostVanInfo from "./pages/Host/Host vans/HostVanInfo.jsx";
 import HostVanPricing from "./pages/Host/Host vans/HostVanPricing.jsx";
 import HostVanPhotos from "./pages/Host/Host vans/HostVanPhotos.jsx";
 import Error from "./components/Error.jsx";
-import NotFound from "./pages/NoteFound.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import Login, {
   loader as loginLoader,
   action as loginAction,
 } from "./pages/Login.jsx";
+import SignUp, { action as singUpAction, loader as signUpLoader } from "./pages/SignUp.jsx";
 
 import {
   createBrowserRouter,
@@ -35,8 +36,6 @@ import {
 } from "react-router-dom";
 
 import "./App.css";
-
-import "./server";
 
 function App() {
   const router = createBrowserRouter(
@@ -53,6 +52,7 @@ function App() {
             loader={loginLoader}
             action={loginAction}
           />
+          <Route path="signup" element={<SignUp />} action={singUpAction} loader={signUpLoader} />
           <Route path="host" element={<HostLayout />} loader={hostLoader}>
             <Route index element={<Dashboard />} loader={hostDashboardLoader} />
             <Route
