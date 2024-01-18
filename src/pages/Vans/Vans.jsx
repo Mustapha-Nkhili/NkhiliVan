@@ -16,7 +16,6 @@ export function loader() {
 export default function Vans() {
   const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData();
-  console.log(data);
 
   const vansContainer = useRef();
   const [activeFilter, setActiveFilter] = useState(

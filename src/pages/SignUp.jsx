@@ -3,8 +3,6 @@ import {
   Link,
   redirect,
   useActionData,
-  useLoaderData,
-  useNavigate,
   useNavigation,
 } from "react-router-dom";
 import {
@@ -13,59 +11,37 @@ import {
   // sendEmailVerification,
 } from "firebase/auth";
 import { app } from "../firebaseConfig";
-import { useEffect, useState } from "react";
 
-export function loader({ request }) {
-  const url = new URL(request.url);
-  return url;
-}
+export function action(setUser) {
+  return async ({ request }) => {
+    const formData = await request.formData();
+    const pathname =
+      new URL(request.url).searchParams.get("redirectTo") || "/host";
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const auth = getAuth(app);
 
-export async function action({ request }) {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const auth = getAuth(app);
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    // sendEmailVerification(auth.currentUser).then(() => {
-    //   console.log("verfication sent");
-    // });
-    const user = userCredential.user;
-    console.log(user);
-    localStorage.setItem("loggedin", true);
-    throw redirect("/host");
-  } catch (error) {
-    if (error.status !== 302) {
-      localStorage.removeItem("loggedin");
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      // sendEmailVerification(auth.currentUser).then(() => {
+      //   console.log("verfication sent");
+      // });
+      setUser(true);
+      return redirect(pathname);
+    } catch (error) {
+      setUser(false);
+      return error?.message?.match(/\b(?!firebase\b)\w+\b/gi).join(" ");
     }
-    return error.status === 302 ? error.status : error.message;
-  }
+  };
 }
 export default function SignUp() {
-  const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
-  const navigate = useNavigate();
   const error = useActionData();
-  const [signUpError, setSignUpError] = useState(null);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (JSON.parse(localStorage.getItem("loggedin")) || error === 302) {
-      navigate(pathname, { replace: true });
-    } else if (typeof error === "string") {
-      let err = error.split(" ");
-      err.shift();
-      setSignUpError(err.join(" "));
-    }
-  }, [error, navigate, pathname]);
   return (
     <main className="sign-up container">
       <h1>Sign up</h1>
-      {signUpError && <h2 className="sign-up-error">{signUpError}</h2>}
+      {error && <h2 className="sign-up-error">{error}</h2>}
       <Form method="post" replace>
         <input
           type="email"

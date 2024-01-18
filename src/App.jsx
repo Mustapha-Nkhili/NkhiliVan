@@ -26,7 +26,7 @@ import Login, {
   loader as loginLoader,
   action as loginAction,
 } from "./pages/Login.jsx";
-import SignUp, { action as singUpAction, loader as signUpLoader } from "./pages/SignUp.jsx";
+import SignUp, { action as singUpAction } from "./pages/SignUp.jsx";
 
 import {
   createBrowserRouter,
@@ -34,10 +34,15 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import PageLoader from "./pages/PageLoader.jsx";
+import Profile from "./pages/Host/Profile.jsx";
+import { AuthContext } from "./components/AuthProvider.jsx";
+import { useContext } from "react";
 
 import "./App.css";
 
 function App() {
+  const { user, setUser } = useContext(AuthContext);
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -49,27 +54,42 @@ function App() {
           <Route
             path="login"
             element={<Login />}
+            action={loginAction(setUser)}
             loader={loginLoader}
-            action={loginAction}
           />
-          <Route path="signup" element={<SignUp />} action={singUpAction} loader={signUpLoader} />
-          <Route path="host" element={<HostLayout />} loader={hostLoader}>
-            <Route index element={<Dashboard />} loader={hostDashboardLoader} />
-            <Route
-              path="income"
-              element={<Income />}
-              loader={hostIncomeLoader}
-            />
-            <Route path="reviews" element={<Reviews />} />
-            <Route path="vans" element={<HostVans />} loader={hostVansLoader} />
-            <Route
-              path="vans/:id"
-              element={<HostVanDetails />}
-              loader={hostVanDetailslsLoader}
-            >
-              <Route index element={<HostVanInfo />} />
-              <Route path="pricing" element={<HostVanPricing />} />
-              <Route path="photos" element={<HostVanPhotos />} />
+          <Route
+            path="signup"
+            element={<SignUp />}
+            action={singUpAction(setUser)}
+          />
+          <Route path="host" loader={hostLoader(user)}>
+            <Route path="profile" element={<Profile />} />
+            <Route element={<HostLayout />}>
+              <Route
+                index
+                element={<Dashboard />}
+                loader={hostDashboardLoader}
+              />
+              <Route
+                path="income"
+                element={<Income />}
+                loader={hostIncomeLoader}
+              />
+              <Route path="reviews" element={<Reviews />} />
+              <Route
+                path="vans"
+                element={<HostVans />}
+                loader={hostVansLoader}
+              />
+              <Route
+                path="vans/:id"
+                element={<HostVanDetails />}
+                loader={hostVanDetailslsLoader}
+              >
+                <Route index element={<HostVanInfo />} />
+                <Route path="pricing" element={<HostVanPricing />} />
+                <Route path="photos" element={<HostVanPhotos />} />
+              </Route>
             </Route>
           </Route>
         </Route>
@@ -78,7 +98,7 @@ function App() {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router} fallbackElement={<PageLoader />} />;
 }
 
 export default App;

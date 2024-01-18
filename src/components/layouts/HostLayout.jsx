@@ -1,9 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { requireAuth } from "../../utils";
 
-export async function loader({ request }) {
-  await requireAuth(request);
-  return null;
+export function loader(user) {
+  return async ({ request }) => {
+    console.log(user)
+    await requireAuth(request, user);
+    return null;
+  };
 }
 
 export default function HostLayout() {
