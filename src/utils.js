@@ -2,9 +2,6 @@ import { redirect } from "react-router-dom";
 import {
   getAuth,
   signInWithRedirect,
-  signInWithPopup,
-  TwitterAuthProvider,
-  GoogleAuthProvider
 } from "firebase/auth";
 import { app } from "./firebaseConfig";
 
@@ -20,22 +17,19 @@ export async function requireAuth(request, user) {
 }
 
 export async function signInWithProvider(provider) {
-  // signInWithPopup(auth, new GoogleAuthProvider)
-  // .then((result) => {
-  //   const user = result.user;
-
-  //   setUser({
-  //     name: user.displayName,
-  //     email: user.email,
-  //     img: user.photoURL,
-  //     phoneNumber: user.phoneNumber || "you haven't provide your phone number",
-  //     createdAt: user.reloadUserInfo.createdAt,
-  //     lastLoginAt: user.reloadUserInfo.lastLoginAt
-  //   })
-  //   throw redirect("/host")
-  // }).catch((error) => {
-  //   setUser(null)
-  //   console.error(error.message)
-  // });
   signInWithRedirect(auth, provider)
+}
+
+export const userInitialValue = (response) => {
+  return {
+    name: response.user.displayName || "John Doe",
+    email: response.user.email || "You haven't provide your email",
+    img: response.user.photoURL || "/src/assets/imgs/default-profile-picture.png",
+    phoneNumber:
+      response.user.phoneNumber ||
+      "You haven't provide your phone number",
+    createdAt: response.user.reloadUserInfo.createdAt,
+    lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
+    userId: response.user.uid,
+  }
 }

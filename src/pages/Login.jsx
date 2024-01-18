@@ -2,26 +2,29 @@ import {
   Link,
   useLoaderData,
   Form,
-  // redirect,
   useActionData,
   useNavigation,
   useNavigate,
-  redirect,
 } from "react-router-dom";
 import {
   FacebookAuthProvider,
   GoogleAuthProvider,
   TwitterAuthProvider,
   getAuth,
-  getRedirectResult,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { app } from "../firebaseConfig";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../components/AuthProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { signInWithProvider } from "../utils";
-import { faFacebook, faGoogle, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { signInWithProvider, userInitialValue } from "../utils";
+import {
+  faFacebook,
+  faGoogle,
+  faXTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+import PageLoader from "./PageLoader";
+import { useAuthentication } from "../authHooks";
 
 const auth = getAuth(app);
 
@@ -33,18 +36,19 @@ export function loader({ request }) {
 export function action(setUser) {
   return async ({ request }) => {
     const formData = await request.formData();
-    // const pathname =
-    //   new URL(request.url).searchParams.get("redirectTo") || "/host";
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      setUser(true);
-      // return redirect(pathname)
+      let response = await signInWithEmailAndPassword(auth, email, password);
+      console.log(response)
+      setUser(userInitialValue(response));
     } catch (error) {
       setUser(false);
-      return error?.message?.match(/\b(?!firebase\b)\w+\b/gi).join(" ");
+      return (
+        error?.message?.match(/\b(?!firebase\b)\w+\b/gi).join(" ") ||
+        "An error occurred during login. Please try again."
+      );
     }
   };
 }
@@ -52,11 +56,11 @@ export function action(setUser) {
 export default function Login() {
   const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
   const navigate = useNavigate();
-  const { user, setUser } = useContext(AuthContext);
+  const { user, userIsLoading } = useContext(AuthContext);
   const message = useLoaderData().searchParams.get("message");
   const error = useActionData();
+  const [loginError, setLoginError] = useState(null);
   const navigation = useNavigation();
-  const auth = getAuth(app);
 
   useEffect(() => {
     if (user) {
@@ -64,28 +68,11 @@ export default function Login() {
     }
   }, [user, pathname, navigate]);
 
-  useEffect(() => {
-    return async () => {
-      const response = await getRedirectResult(auth);
-      if (response) {
-        console.log(response.user);
-        setUser({
-          name: response.user.displayName,
-          email: response.user.email,
-          img: response.user.photoURL,
-          phoneNumber:
-            response.user.phoneNumber ||
-            "You haven't provide your phone number",
-          createdAt: response.user.reloadUserInfo.createdAt,
-          lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
-        });
-        console.log(response.user.photoURL)
-        throw redirect(pathname);
-      }
-    };
-  }, [auth, setUser, pathname]);
+  useAuthentication(auth, pathname, setLoginError);
 
-  return (
+  return userIsLoading ? (
+    <PageLoader />
+  ) : (
     <main className="login container">
       <h1>Sign in to your account</h1>
       {message && <h2 className="login-message">{message}</h2>}
@@ -140,6 +127,8 @@ export default function Login() {
       <span>
         Don't have an account? <Link to={`/signup`}>Create one now</Link>
       </span>
+
+      {loginError && <div className="login-error">{loginError}</div>}
     </main>
   );
 }

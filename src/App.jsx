@@ -26,7 +26,7 @@ import Login, {
   loader as loginLoader,
   action as loginAction,
 } from "./pages/Login.jsx";
-import SignUp, { action as singUpAction } from "./pages/SignUp.jsx";
+import SignUp, { action as singUpAction, loader as signUpLoader } from "./pages/SignUp.jsx";
 
 import {
   createBrowserRouter,
@@ -61,6 +61,7 @@ function App() {
             path="signup"
             element={<SignUp />}
             action={singUpAction(setUser)}
+            loader={signUpLoader}
           />
           <Route path="host" loader={hostLoader(user)}>
             <Route path="profile" element={<Profile />} />

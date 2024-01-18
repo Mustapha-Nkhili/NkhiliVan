@@ -23,6 +23,11 @@ export default function Nav() {
     setProfileClicked((prev) => !prev);
   }
 
+  function removeProfile() {
+    document.getElementsByTagName("body")[0].classList.remove("no-scroll");
+    setProfileClicked(false);
+  }
+
   function handleClick(e, firstEleRef, secEleRef, setterFunc) {
     if (
       !firstEleRef?.current?.contains(e?.target) &&
@@ -64,7 +69,7 @@ export default function Nav() {
   async function userSignOut() {
     await signOut(auth);
     setUser(null);
-    toggleProfile();
+    removeProfile();
     navigate("/", { replace: true });
   }
 
@@ -83,10 +88,7 @@ export default function Nav() {
             className="Xbar"
             onClick={() => {
               setNavClicked(false);
-              document
-                .getElementsByTagName("body")[0]
-                .classList.remove("no-scroll");
-              setProfileClicked(false);
+              removeProfile()
             }}
           />
         ) : (

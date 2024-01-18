@@ -379,12 +379,15 @@ header nav svg.Xbar {
     cursor: pointer;
     transition: all 350ms ease-in-out;
   }
+
   header .main--nav svg.bar:hover {
     background-color: var(--main-clr);
   }
+
   header .main--nav svg.Xbar:hover {
     background-color: var(--error-clr);
   }
+
   header .main--nav svg.bar:active,
   header .main--nav svg.Xbar:active {
     scale: 0.5;
@@ -1113,6 +1116,7 @@ header nav ul.user-list .user-name {
 
 .profile .profile-imgs-container {
   position: relative;
+  margin-bottom: 50px;
 }
 
 .profile .profile-banner {
@@ -1135,10 +1139,6 @@ header nav ul.user-list .user-name {
 
 .profile .content {
   padding: 10px;
-}
-
-.profile .content h1 {
-  margin-top: 50px;
 }
 
 .profile .user-last-login,
@@ -1315,7 +1315,8 @@ header nav ul.user-list .user-name {
   z-index: -1;
 }
 
-.login .sign-methods {
+.login .sign-methods,
+.sign-up .sign-methods {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1323,7 +1324,8 @@ header nav ul.user-list .user-name {
   padding: 20px 0;
 }
 
-.login .sign-methods .sign-method {
+.login .sign-methods .sign-method,
+.sign-up .sign-methods .sign-method {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1335,15 +1337,18 @@ header nav ul.user-list .user-name {
   transition: all 350ms ease-in-out;
 }
 
-.login .sign-methods .sign-method.google {
+.login .sign-methods .sign-method.google,
+.sign-up .sign-methods .sign-method.google {
   color: #EA4335
 }
 
-.login .sign-methods .sign-method.facebook {
+.login .sign-methods .sign-method.facebook,
+.sign-up .sign-methods .sign-method.facebook {
   color: #0866FF
 }
 
-.login .sign-methods .sign-method:active {
+.login .sign-methods .sign-method:active,
+.sign-up .sign-methods .sign-method:active {
   scale: 0.5;
 }
 

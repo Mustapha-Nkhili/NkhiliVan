@@ -3,8 +3,9 @@ import { AuthContext } from "../../components/AuthProvider";
 
 export default function Profile() {
   const { user } = useContext(AuthContext);
-  const date = new Date(parseInt(user.lastLoginAt));
-  console.log(date);
+  const date = user.lastLoginAt
+    ? new Date(parseInt(user.createdAt))
+    : new Date();
 
   return (
     <div className="profile container">
@@ -16,11 +17,7 @@ export default function Profile() {
             className="profile-banner"
           />
           <img
-            src={
-              user.img
-                ? user.img
-                : "/src/assets/imgs/default-profile-picture.png"
-            }
+            src={user.img}
             alt="this is the profile picture"
             className="profile-picture"
           />
@@ -31,7 +28,12 @@ export default function Profile() {
             <span className="user-last-login">
               <span>Last login: </span>
               <span>
-                {date.toDateString()} - {date.getHours()}:{date.getMinutes()}
+                {date.toDateString()} -{" "}
+                {date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}
+                :
+                {date.getMinutes() < 10
+                  ? `0${date.getMinutes()}`
+                  : date.getMinutes()}
               </span>
             </span>
           </div>
