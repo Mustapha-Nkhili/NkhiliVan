@@ -3,7 +3,6 @@ import { requireAuth } from "../../utils";
 
 export function loader(user) {
   return async ({ request }) => {
-    console.log(user)
     await requireAuth(request, user);
     return null;
   };

@@ -4,9 +4,10 @@ import {
   redirect,
   useActionData,
   useLoaderData,
+  useNavigate,
   useNavigation,
 } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -36,20 +37,40 @@ export function loader({ request }) {
 export function action(setUser) {
   return async ({ request }) => {
     const formData = await request.formData();
-    const pathname =
-      new URL(request.url).searchParams.get("redirectTo") || "/host";
+    // const pathname =
+    //   new URL(request.url).searchParams.get("redirectTo") || "/host";
+    const firstName = formData.get("userFirstName");
+    const lastName = formData.get("userLastName")
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      let response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       // sendEmailVerification(auth.currentUser).then(() => {
       //   console.log("verfication sent");
       // });
-      setUser(true);
-      return redirect(pathname);
+      if (response) {
+        setUser({
+          name: response.user.displayName || `${firstName} ${lastName}`,
+          email: response.user.email || "You haven't provide your email",
+          img:
+            response.user.photoURL ||
+            "/src/assets/imgs/default-profile-picture.png",
+          phoneNumber:
+            response.user.phoneNumber ||
+            "You haven't provide your phone number",
+          createdAt: response.user.reloadUserInfo.createdAt,
+          lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
+          userId: response.user.uid,
+        });
+      }
+      // return redirect(pathname);
     } catch (error) {
-      setUser(false);
+      setUser(null);
       return (
         error?.message?.match(/\b(?!firebase\b)\w+\b/gi).join(" ") ||
         "An error occurred during login. Please try again."
@@ -60,9 +81,16 @@ export function action(setUser) {
 export default function SignUp() {
   const error = useActionData();
   const navigation = useNavigation();
+  const navigate = useNavigate();
   const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
-  const { userIsLoading } = useContext(AuthContext);
+  const { user, userIsLoading } = useContext(AuthContext);
   const [loginError, setLoginError] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      navigate(pathname, { replace: true });
+    }
+  }, [user, navigate, pathname]);
 
   useAuthentication(auth, pathname, setLoginError);
 
@@ -75,11 +103,27 @@ export default function SignUp() {
       {loginError && <div className="login-erro">{loginError}</div>}
       <Form method="post" replace>
         <input
+          type="text"
+          name="userFirstName"
+          className="sign-up-user-name"
+          placeholder="Your first name"
+          autoComplete="username"
+          required
+        />
+        <input
+          type="text"
+          name="userLastName"
+          className="sign-up-user-name"
+          placeholder="Your last name"
+          autoComplete="username"
+        />
+        <input
           type="email"
           name="email"
           id="signUpEmail"
           className="sign-up-email"
           placeholder="you@example.com"
+          autoComplete="email"
           required
         />
         <input
@@ -88,6 +132,7 @@ export default function SignUp() {
           id="signUpPassword"
           className="sign-up-password"
           placeholder="Enter your password"
+          autoComplete="current-password"
           required
         />
         <button

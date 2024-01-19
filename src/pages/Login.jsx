@@ -17,7 +17,7 @@ import { app } from "../firebaseConfig";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../components/AuthProvider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { signInWithProvider, userInitialValue } from "../utils";
+import { signInWithProvider } from "../utils";
 import {
   faFacebook,
   faGoogle,
@@ -36,15 +36,28 @@ export function loader({ request }) {
 export function action(setUser) {
   return async ({ request }) => {
     const formData = await request.formData();
+    const userName = formData.get("userName")
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
       let response = await signInWithEmailAndPassword(auth, email, password);
       console.log(response)
-      setUser(userInitialValue(response));
+      setUser({
+        name: response.user.displayName || userName,
+        email: response.user.email || "You haven't provide your email",
+        img:
+          response.user.photoURL ||
+          "/src/assets/imgs/default-profile-picture.png",
+        phoneNumber:
+          response.user.phoneNumber ||
+          "You haven't provide your phone number",
+        createdAt: response.user.reloadUserInfo.createdAt,
+        lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
+        userId: response.user.uid,
+      });
     } catch (error) {
-      setUser(false);
+      setUser(null);
       return (
         error?.message?.match(/\b(?!firebase\b)\w+\b/gi).join(" ") ||
         "An error occurred during login. Please try again."
@@ -68,6 +81,7 @@ export default function Login() {
     }
   }, [user, pathname, navigate]);
 
+
   useAuthentication(auth, pathname, setLoginError);
 
   return userIsLoading ? (
@@ -78,12 +92,22 @@ export default function Login() {
       {message && <h2 className="login-message">{message}</h2>}
       {error && <h2 className="login-error">{error}</h2>}
       <Form method="post" replace>
+      <input
+          type="text"
+          name="userName"
+          id="loginUserName"
+          className="login-user-name"
+          placeholder="Your name"
+          autoComplete="username"
+          required
+        />
         <input
           type="email"
           name="email"
           id="loginEmail"
           className="login-email"
           placeholder="you@example.com"
+          autoComplete="email"
           required
         />
         <input
@@ -92,6 +116,7 @@ export default function Login() {
           id="loginPassword"
           className="login-password"
           placeholder="Enter your password"
+          autoComplete="current-password"
           required
         />
         <button

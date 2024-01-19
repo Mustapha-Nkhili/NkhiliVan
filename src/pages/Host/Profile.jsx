@@ -25,8 +25,8 @@ export default function Profile() {
         <div className="content">
           <div className="flex-sb-ctr padding-t-b-10">
             <h1>My profile</h1>
-            <span className="user-last-login">
-              <span>Last login: </span>
+            <span className="user-createdAt-login">
+              <span>Created at: </span>
               <span>
                 {date.toDateString()} -{" "}
                 {date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()}

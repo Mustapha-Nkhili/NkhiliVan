@@ -1,8 +1,7 @@
 import { getRedirectResult } from "firebase/auth";
 import { useEffect, useContext } from "react";
 import { AuthContext } from "./components/AuthProvider";
-import { useNavigate } from "react-router-dom";
-import { userInitialValue } from "./utils";
+import { redirect, useNavigate } from "react-router-dom";
 
 export const useAuthentication = (auth, pathname, setLoginError) => {
   const { setUser, setUserIsLoading } = useContext(AuthContext);
@@ -14,7 +13,19 @@ export const useAuthentication = (auth, pathname, setLoginError) => {
         setUserIsLoading(true);
         const response = await getRedirectResult(auth);
         if (response) {
-          setUser(userInitialValue(response))
+          setUser({
+            name: response.user.displayName || "John doe",
+            email: response.user.email || "You haven't provide your email",
+            img:
+              response.user.photoURL ||
+              "/src/assets/imgs/default-profile-picture.png",
+            phoneNumber:
+              response.user.phoneNumber ||
+              "You haven't provide your phone number",
+            createdAt: response.user.reloadUserInfo.createdAt,
+            lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
+            userId: response.user.uid,
+          });
           navigate(pathname, { replace: true });
         }
         setUserIsLoading(false);

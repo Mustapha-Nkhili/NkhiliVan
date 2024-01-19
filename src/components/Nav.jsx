@@ -19,12 +19,10 @@ export default function Nav() {
   const auth = getAuth(app);
 
   function toggleProfile() {
-    document.getElementsByTagName("body")[0].classList.toggle("no-scroll");
     setProfileClicked((prev) => !prev);
   }
 
   function removeProfile() {
-    document.getElementsByTagName("body")[0].classList.remove("no-scroll");
     setProfileClicked(false);
   }
 
@@ -34,7 +32,6 @@ export default function Nav() {
       !secEleRef?.current?.contains(e?.target)
     ) {
       setterFunc(false);
-      document.getElementsByTagName("body")[0].classList.remove("no-scroll");
     }
   }
 
