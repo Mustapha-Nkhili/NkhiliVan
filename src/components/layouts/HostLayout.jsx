@@ -1,5 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { requireAuth } from "../../utils";
+import classnames from "classnames";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../AuthProvider";
 
 export function loader(user) {
   return async ({ request }) => {
@@ -9,6 +12,20 @@ export function loader(user) {
 }
 
 export default function HostLayout() {
+  const { isVerificationEmailSent, setIsVerificationEmailSent } =
+    useContext(AuthContext);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setIsVerificationEmailSent(false);
+    }, 15000);
+
+    // Cleanup function to clear the timeout if the component unmounts or dependencies change
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [setIsVerificationEmailSent]);
+
   return (
     <div className="host">
       <nav>
@@ -81,6 +98,14 @@ export default function HostLayout() {
         </ul>
       </nav>
       <main>
+        <span
+          className={classnames("email-verfication-alert", {
+            active: isVerificationEmailSent,
+          })}
+        >
+          A verification email has been sent to your email
+        </span>
+
         <Outlet />
       </main>
     </div>

@@ -25,6 +25,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import PageLoader from "./PageLoader";
 import { useAuthentication } from "../authHooks";
+import defaultProfileImg from "../assets/imgs/default-profile-picture.png";
 
 const auth = getAuth(app);
 
@@ -36,22 +37,18 @@ export function loader({ request }) {
 export function action(setUser) {
   return async ({ request }) => {
     const formData = await request.formData();
-    const userName = formData.get("userName")
+    const userName = formData.get("userName");
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
       let response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response)
       setUser({
         name: response.user.displayName || userName,
         email: response.user.email || "You haven't provide your email",
-        img:
-          response.user.photoURL ||
-          "/src/assets/imgs/default-profile-picture.png",
+        img: response.user.photoURL || defaultProfileImg,
         phoneNumber:
-          response.user.phoneNumber ||
-          "You haven't provide your phone number",
+          response.user.phoneNumber || "You haven't provide your phone number",
         createdAt: response.user.reloadUserInfo.createdAt,
         lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
         userId: response.user.uid,
@@ -81,7 +78,6 @@ export default function Login() {
     }
   }, [user, pathname, navigate]);
 
-
   useAuthentication(auth, pathname, setLoginError);
 
   return userIsLoading ? (
@@ -92,13 +88,12 @@ export default function Login() {
       {message && <h2 className="login-message">{message}</h2>}
       {error && <h2 className="login-error">{error}</h2>}
       <Form method="post" replace>
-      <input
+        <input
           type="text"
           name="userName"
           id="loginUserName"
           className="login-user-name"
           placeholder="Your name"
-          autoComplete="username"
           required
         />
         <input
@@ -107,7 +102,6 @@ export default function Login() {
           id="loginEmail"
           className="login-email"
           placeholder="you@example.com"
-          autoComplete="email"
           required
         />
         <input
@@ -116,7 +110,6 @@ export default function Login() {
           id="loginPassword"
           className="login-password"
           placeholder="Enter your password"
-          autoComplete="current-password"
           required
         />
         <button

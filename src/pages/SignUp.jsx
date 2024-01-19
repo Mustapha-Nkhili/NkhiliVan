@@ -1,7 +1,6 @@
 import {
   Form,
   Link,
-  redirect,
   useActionData,
   useLoaderData,
   useNavigate,
@@ -14,7 +13,7 @@ import {
   GoogleAuthProvider,
   TwitterAuthProvider,
   FacebookAuthProvider,
-  // sendEmailVerification,
+  sendEmailVerification,
 } from "firebase/auth";
 import { AuthContext } from "../components/AuthProvider";
 import { app } from "../firebaseConfig";
@@ -27,6 +26,10 @@ import {
   faXTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import PageLoader from "./PageLoader";
+import defaultProfileImg from "../assets/imgs/default-profile-picture.png";
+import classnames from "classnames";
+
+let verficationEmailSent = false;
 
 const auth = getAuth(app);
 export function loader({ request }) {
@@ -37,10 +40,8 @@ export function loader({ request }) {
 export function action(setUser) {
   return async ({ request }) => {
     const formData = await request.formData();
-    // const pathname =
-    //   new URL(request.url).searchParams.get("redirectTo") || "/host";
     const firstName = formData.get("userFirstName");
-    const lastName = formData.get("userLastName")
+    const lastName = formData.get("userLastName");
     const email = formData.get("email");
     const password = formData.get("password");
 
@@ -50,16 +51,14 @@ export function action(setUser) {
         email,
         password
       );
-      // sendEmailVerification(auth.currentUser).then(() => {
-      //   console.log("verfication sent");
-      // });
+
       if (response) {
+        await sendEmailVerification(auth.currentUser);
+        verficationEmailSent = true;
         setUser({
           name: response.user.displayName || `${firstName} ${lastName}`,
           email: response.user.email || "You haven't provide your email",
-          img:
-            response.user.photoURL ||
-            "/src/assets/imgs/default-profile-picture.png",
+          img: response.user.photoURL || defaultProfileImg,
           phoneNumber:
             response.user.phoneNumber ||
             "You haven't provide your phone number",
@@ -68,7 +67,6 @@ export function action(setUser) {
           userId: response.user.uid,
         });
       }
-      // return redirect(pathname);
     } catch (error) {
       setUser(null);
       return (
@@ -83,8 +81,13 @@ export default function SignUp() {
   const navigation = useNavigation();
   const navigate = useNavigate();
   const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
-  const { user, userIsLoading } = useContext(AuthContext);
+  const { user, userIsLoading, setIsVerificationEmailSent } =
+    useContext(AuthContext);
   const [loginError, setLoginError] = useState(null);
+
+  useEffect(() => {
+    setIsVerificationEmailSent(verficationEmailSent);
+  }, [setIsVerificationEmailSent]);
 
   useEffect(() => {
     if (user) {
@@ -107,7 +110,6 @@ export default function SignUp() {
           name="userFirstName"
           className="sign-up-user-name"
           placeholder="Your first name"
-          autoComplete="username"
           required
         />
         <input
@@ -115,7 +117,6 @@ export default function SignUp() {
           name="userLastName"
           className="sign-up-user-name"
           placeholder="Your last name"
-          autoComplete="username"
         />
         <input
           type="email"
@@ -123,7 +124,6 @@ export default function SignUp() {
           id="signUpEmail"
           className="sign-up-email"
           placeholder="you@example.com"
-          autoComplete="email"
           required
         />
         <input
@@ -132,7 +132,6 @@ export default function SignUp() {
           id="signUpPassword"
           className="sign-up-password"
           placeholder="Enter your password"
-          autoComplete="current-password"
           required
         />
         <button

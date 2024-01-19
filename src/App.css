@@ -745,6 +745,8 @@ header nav ul.user-list .user-name {
 /* Host */
 .host {
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  position: relative;
+  overflow: hidden;
 }
 
 .host nav {
@@ -1335,6 +1337,23 @@ header nav ul.user-list .user-name {
 .login .sign-methods .sign-method:active,
 .sign-up .sign-methods .sign-method:active {
   scale: 0.5;
+}
+
+.email-verfication-alert {
+  position: fixed;
+  font-weight: 600;
+  top: 125px;
+  right: -500px;
+  width: 200px;
+  padding: 21px;
+  text-align: justify;
+  background-color: var(--main-clr);
+  border-radius: 17px 0 0 17px;
+  transition: all 350ms ease-in-out;
+}
+
+.email-verfication-alert.active {
+  right: 0;
 }
 
 /* .login */
