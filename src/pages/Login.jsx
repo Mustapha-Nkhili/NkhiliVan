@@ -5,6 +5,7 @@ import {
   useActionData,
   useNavigation,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 import {
   FacebookAuthProvider,
@@ -66,12 +67,11 @@ export function action(setUser) {
 export default function Login() {
   const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
   const navigate = useNavigate();
-  const { user, userIsLoading } = useContext(AuthContext);
+  const { user, userIsLoading, setUserIsLoading } = useContext(AuthContext);
   const message = useLoaderData().searchParams.get("message");
   const error = useActionData();
   const [loginError, setLoginError] = useState(null);
   const navigation = useNavigation();
-
   useEffect(() => {
     if (user) {
       navigate(pathname, { replace: true });
@@ -79,6 +79,11 @@ export default function Login() {
   }, [user, pathname, navigate]);
 
   useAuthentication(auth, pathname, setLoginError);
+
+  function signInUsingProvider(provider) {
+    signInWithProvider(provider);
+    setUserIsLoading(true);
+  }
 
   return userIsLoading ? (
     <PageLoader />
@@ -125,19 +130,19 @@ export default function Login() {
       <ul className="sign-methods">
         <li
           className="sign-method google"
-          onClick={() => signInWithProvider(new GoogleAuthProvider())}
+          onClick={() => signInUsingProvider(new GoogleAuthProvider())}
         >
           <FontAwesomeIcon icon={faGoogle} />
         </li>
         <li
           className="sign-method twitter"
-          onClick={() => signInWithProvider(new TwitterAuthProvider())}
+          onClick={() => signInUsingProvider(new TwitterAuthProvider())}
         >
           <FontAwesomeIcon icon={faXTwitter} />
         </li>
         <li
           className="sign-method facebook"
-          onClick={() => signInWithProvider(new FacebookAuthProvider())}
+          onClick={() => signInUsingProvider(new FacebookAuthProvider())}
         >
           <FontAwesomeIcon icon={faFacebook} />
         </li>

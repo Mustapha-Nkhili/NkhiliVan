@@ -1,12 +1,17 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../components/AuthProvider";
 
 export default function Profile() {
-  const { user } = useContext(AuthContext);
+  const { user, setUserIsLoading } = useContext(AuthContext);
   const date = user.lastLoginAt
     ? new Date(parseInt(user.createdAt))
     : new Date();
 
+  useEffect(() => {
+    if (user) {
+      setUserIsLoading(false);
+    }
+  });
   return (
     <div className="profile container">
       <div className="container">

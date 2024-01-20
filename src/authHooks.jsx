@@ -3,6 +3,7 @@ import { useEffect, useContext } from "react";
 import { AuthContext } from "./components/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import defaultBannerImg from "./assets/imgs/Hero-Banner-Placeholder-Light.png";
+
 export const useAuthentication = (auth, pathname, setLoginError) => {
   const { setUser, setUserIsLoading } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -10,7 +11,6 @@ export const useAuthentication = (auth, pathname, setLoginError) => {
   useEffect(() => {
     return async () => {
       try {
-        setUserIsLoading(true);
         const response = await getRedirectResult(auth);
         if (response) {
           setUser({
@@ -26,7 +26,6 @@ export const useAuthentication = (auth, pathname, setLoginError) => {
           });
           navigate(pathname, { replace: true });
         }
-        setUserIsLoading(false);
       } catch (error) {
         setUserIsLoading(false);
         setLoginError(

@@ -27,7 +27,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import PageLoader from "./PageLoader";
 import defaultProfileImg from "../assets/imgs/default-profile-picture.png";
-import classnames from "classnames";
 
 let verficationEmailSent = false;
 
@@ -81,7 +80,7 @@ export default function SignUp() {
   const navigation = useNavigation();
   const navigate = useNavigate();
   const pathname = useLoaderData().searchParams.get("redirectTo") || "/host";
-  const { user, userIsLoading, setIsVerificationEmailSent } =
+  const { user, userIsLoading, setIsVerificationEmailSent, setUserIsLoading } =
     useContext(AuthContext);
   const [loginError, setLoginError] = useState(null);
 
@@ -94,6 +93,11 @@ export default function SignUp() {
       navigate(pathname, { replace: true });
     }
   }, [user, navigate, pathname]);
+
+  function signInUsingProvider(provider) {
+    signInWithProvider(provider);
+    setUserIsLoading(true);
+  }
 
   useAuthentication(auth, pathname, setLoginError);
 
@@ -147,19 +151,19 @@ export default function SignUp() {
       <ul className="sign-methods">
         <li
           className="sign-method google"
-          onClick={() => signInWithProvider(new GoogleAuthProvider())}
+          onClick={() => signInUsingProvider(new GoogleAuthProvider())}
         >
           <FontAwesomeIcon icon={faGoogle} />
         </li>
         <li
           className="sign-method twitter"
-          onClick={() => signInWithProvider(new TwitterAuthProvider())}
+          onClick={() => signInUsingProvider(new TwitterAuthProvider())}
         >
           <FontAwesomeIcon icon={faXTwitter} />
         </li>
         <li
           className="sign-method facebook"
-          onClick={() => signInWithProvider(new FacebookAuthProvider())}
+          onClick={() => signInUsingProvider(new FacebookAuthProvider())}
         >
           <FontAwesomeIcon icon={faFacebook} />
         </li>
