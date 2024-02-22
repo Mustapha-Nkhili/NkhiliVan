@@ -5,9 +5,10 @@ import {
   getDoc,
   query,
   where,
+  setDoc,
 } from "firebase/firestore";
 
-import {db} from "./firebaseConfig"
+import { db } from "./firebaseConfig";
 
 const vansCollectionRef = collection(db, "vans");
 
@@ -56,5 +57,25 @@ export async function getHostVans() {
   } catch (error) {
     console.error("Error fetching data:", error);
     throw { error: "An error occurred while fetching data." };
+  }
+}
+
+export async function storeUserInDB(user) {
+  try {
+    const docRef = await setDoc(doc(db, "users", user.userId), user);
+    console.log(docRef);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function getUser(userId) {
+  try {
+    const docRef = doc(db, "users", userId);
+    const userSnapshot = await getDoc(docRef);
+
+    return userSnapshot.data();
+  } catch (error) {
+    console.error(error);
   }
 }

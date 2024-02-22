@@ -5,7 +5,6 @@ import {
   useActionData,
   useNavigation,
   useNavigate,
-  useLocation,
 } from "react-router-dom";
 import {
   FacebookAuthProvider,
@@ -26,7 +25,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import PageLoader from "./PageLoader";
 import { useAuthentication } from "../authHooks";
-import defaultProfileImg from "../assets/imgs/default-profile-picture.png";
+import { getUser } from "../api";
 
 const auth = getAuth(app);
 
@@ -38,22 +37,12 @@ export function loader({ request }) {
 export function action(setUser) {
   return async ({ request }) => {
     const formData = await request.formData();
-    const userName = formData.get("userName");
     const email = formData.get("email");
     const password = formData.get("password");
 
     try {
       let response = await signInWithEmailAndPassword(auth, email, password);
-      setUser({
-        name: response.user.displayName || userName,
-        email: response.user.email || "You haven't provide your email",
-        img: response.user.photoURL || defaultProfileImg,
-        phoneNumber:
-          response.user.phoneNumber || "You haven't provide your phone number",
-        createdAt: response.user.reloadUserInfo.createdAt,
-        lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
-        userId: response.user.uid,
-      });
+      setUser(await getUser(response.user.uid));
     } catch (error) {
       setUser(null);
       return (
@@ -72,6 +61,7 @@ export default function Login() {
   const error = useActionData();
   const [loginError, setLoginError] = useState(null);
   const navigation = useNavigation();
+
   useEffect(() => {
     if (user) {
       navigate(pathname, { replace: true });

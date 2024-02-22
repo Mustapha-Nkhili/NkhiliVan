@@ -18,7 +18,7 @@ export default function HostLayout() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setIsVerificationEmailSent(false);
-    }, 15000);
+    }, 6000);
 
     // Cleanup function to clear the timeout if the component unmounts or dependencies change
     return () => {

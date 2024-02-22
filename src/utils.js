@@ -17,5 +17,5 @@ export async function requireAuth(request, user) {
 }
 
 export async function signInWithProvider(provider) {
-  signInWithRedirect(auth, provider)
+  signInWithRedirect(auth, provider);
 }

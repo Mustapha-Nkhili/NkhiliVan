@@ -27,10 +27,12 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import PageLoader from "./PageLoader";
 import defaultProfileImg from "../assets/imgs/default-profile-picture.png";
+import { storeUserInDB, getUser } from "../api";
 
 let verficationEmailSent = false;
 
 const auth = getAuth(app);
+
 export function loader({ request }) {
   const url = new URL(request.url);
   return url;
@@ -54,17 +56,21 @@ export function action(setUser) {
       if (response) {
         await sendEmailVerification(auth.currentUser);
         verficationEmailSent = true;
-        setUser({
-          name: response.user.displayName || `${firstName} ${lastName}`,
-          email: response.user.email || "You haven't provide your email",
-          img: response.user.photoURL || defaultProfileImg,
-          phoneNumber:
-            response.user.phoneNumber ||
-            "You haven't provide your phone number",
-          createdAt: response.user.reloadUserInfo.createdAt,
-          lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
-          userId: response.user.uid,
-        });
+        if (!(await getUser(response.user.uid))) {
+          storeUserInDB({
+            name: response.user.displayName || `${firstName} ${lastName}`,
+            email: response.user.email || "You haven't provide your email",
+            img: response.user.photoURL || defaultProfileImg,
+            phoneNumber:
+              response.user.phoneNumber ||
+              "You haven't provide your phone number",
+            createdAt: response.user.reloadUserInfo.createdAt,
+            lastLoginAt: response.user.reloadUserInfo.lastLoginAt,
+            userId: response.user.uid,
+          });
+
+          setUser(await getUser(response.user.uid));
+        }
       }
     } catch (error) {
       setUser(null);
@@ -75,6 +81,7 @@ export function action(setUser) {
     }
   };
 }
+
 export default function SignUp() {
   const error = useActionData();
   const navigation = useNavigation();
