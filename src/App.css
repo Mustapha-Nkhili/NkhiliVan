@@ -1133,6 +1133,81 @@ header nav ul.user-list .user-name {
   font-weight: 600;
 }
 
+.add-vans {
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  padding: 30px;
+}
+
+.add-vans input,
+.add-vans textarea {
+  padding: 15px;
+  border-radius: 6px;
+  width: 100%;
+  margin: 5px 0;
+  background-color: transparent;
+  color: var(--main-text-clr);
+  border: 1px solid #D1D5DB;
+  outline: none;
+}
+
+.add-vans textarea {
+  resize: vertical;
+  max-width: 100%;
+}
+
+.add-vans h1 {
+  font-size: 2rem;
+  text-align: center;
+  text-transform: capitalize;
+  margin-bottom: 20px;
+}
+
+.add-vans h2 {
+  margin: 20px 0;
+}
+
+.add-vans .vans-type-list {
+  width: 200px;
+  margin: auto auto 60px;
+  max-width: 100%;
+}
+
+.add-vans .vans-type-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #F5F4F1;
+}
+
+.add-vans .vans-type-list li label {
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+
+.add-vans .vans-type-list li input {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.add-vans .add-van-btn {
+  padding: 10px;
+  border-radius: 5px;
+  text-transform: capitalize;
+  background-color: var(--main-clr);
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  transition: 0.3s;
+}
+.add-vans .add-van-btn:active {
+  scale: 0.7;
+}
 
 /* Host */
 

@@ -84,14 +84,6 @@ export default function Login() {
       {error && <h2 className="login-error">{error}</h2>}
       <Form method="post" replace>
         <input
-          type="text"
-          name="userName"
-          id="loginUserName"
-          className="login-user-name"
-          placeholder="Your name"
-          required
-        />
-        <input
           type="email"
           name="email"
           id="loginEmail"

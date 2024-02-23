@@ -36,29 +36,25 @@ export default function Nav() {
   }
 
   useEffect(() => {
-    document.body.addEventListener(
-      "click",
-      (e) => handleClick(e, navListRef, Xbar, setNavClicked)
+    document.body.addEventListener("click", (e) =>
+      handleClick(e, navListRef, Xbar, setNavClicked)
     );
 
     return () => {
-      document.body.removeEventListener(
-        "click",
-        (e) => handleClick(e, navListRef, Xbar, setNavClicked)
+      document.body.removeEventListener("click", (e) =>
+        handleClick(e, navListRef, Xbar, setNavClicked)
       );
     };
   }, [navListRef]);
 
   useEffect(() => {
-    document.body.addEventListener(
-      "click",
-      (e) => handleClick(e, userProfileIconRef, XmarkProfile, setProfileClicked)
+    document.body.addEventListener("click", (e) =>
+      handleClick(e, userProfileIconRef, XmarkProfile, setProfileClicked)
     );
 
     return () => {
-      document.body.removeEventListener(
-        "click",
-        (e) => handleClick(e, userProfileIconRef, XmarkProfile, setProfileClicked)
+      document.body.removeEventListener("click", (e) =>
+        handleClick(e, userProfileIconRef, XmarkProfile, setProfileClicked)
       );
     };
   }, [userProfileIconRef]);
@@ -85,7 +81,7 @@ export default function Nav() {
             className="Xbar"
             onClick={() => {
               setNavClicked(false);
-              removeProfile()
+              removeProfile();
             }}
           />
         ) : (
@@ -184,6 +180,9 @@ export default function Nav() {
               <span className="user-name">{user.name}</span>
               <li>
                 <Link to="host/profile">Your Profile</Link>
+              </li>
+              <li>
+                <Link to="host/addvans">Add vans</Link>
               </li>
               <li onClick={userSignOut}>Sign out</li>
             </ul>

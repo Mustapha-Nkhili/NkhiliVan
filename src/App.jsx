@@ -26,7 +26,10 @@ import Login, {
   loader as loginLoader,
   action as loginAction,
 } from "./pages/Login.jsx";
-import SignUp, { action as singUpAction, loader as signUpLoader } from "./pages/SignUp.jsx";
+import SignUp, {
+  action as singUpAction,
+  loader as signUpLoader,
+} from "./pages/SignUp.jsx";
 
 import {
   createBrowserRouter,
@@ -40,6 +43,7 @@ import { AuthContext } from "./components/AuthProvider.jsx";
 import { useContext } from "react";
 
 import "./App.css";
+import AddVans from "./pages/Host/AddVans.jsx";
 
 function App() {
   const { user, setUser } = useContext(AuthContext);
@@ -65,6 +69,7 @@ function App() {
           />
           <Route path="host" loader={hostLoader(user)}>
             <Route path="profile" element={<Profile />} />
+            <Route path="addvans" element={<AddVans />} />
             <Route element={<HostLayout />}>
               <Route
                 index
