@@ -1150,6 +1150,49 @@ header nav ul.user-list .user-name {
   outline: none;
 }
 
+.add-vans .choose-van-img {
+  position: relative;
+  display: block;
+  width: 250px;
+  border: 2px dashed #D1D5DB;
+  padding: 20px;
+  border-radius: 6px;
+  margin: auto auto 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.add-vans .choose-van-img .img-container {
+  width: 70px;
+  height: 70px;
+  max-width: 100%;
+  padding: 15px;
+  margin: auto auto 20px;
+  background-color: #F0F5FB;
+  border: 1px solid #486898;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.add-vans .choose-van-img .img-container img {
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.add-vans .choose-van-img input {
+  display: none;
+}
+
+.add-vans .choose-van-img p {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.add-vans .choose-van-img span {
+  font-size: 0.8rem;
+  color: #95928f;
+}
+
 .add-vans textarea {
   resize: vertical;
   max-width: 100%;
@@ -1205,8 +1248,15 @@ header nav ul.user-list .user-name {
   outline: none;
   transition: 0.3s;
 }
+
 .add-vans .add-van-btn:active {
   scale: 0.7;
+}
+
+.add-vans span.img-type-error {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--error-clr) !important;
 }
 
 /* Host */
