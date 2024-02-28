@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "./firebaseConfig";
+import { nanoid } from "nanoid";
 
 const vansCollectionRef = collection(db, "vans");
 
@@ -62,8 +63,7 @@ export async function getHostVans() {
 
 export async function storeUserInDB(user) {
   try {
-    const docRef = await setDoc(doc(db, "users", user.userId), user);
-    console.log(docRef);
+    await setDoc(doc(db, "users", user.userId), user);
   } catch (error) {
     console.error(error);
   }
@@ -75,6 +75,21 @@ export async function getUser(userId) {
     const userSnapshot = await getDoc(docRef);
 
     return userSnapshot.data();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function storeNewVanInDB(userId, newVan) {
+  try {
+    await setDoc(doc(db, "vans", nanoid()), {
+      name: newVan.name,
+      description: newVan.description,
+      hostId: userId,
+      price: newVan.price,
+      imageUrl: newVan.imageUrl,
+      type: newVan.type,
+    });
   } catch (error) {
     console.error(error);
   }

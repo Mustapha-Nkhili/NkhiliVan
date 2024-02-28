@@ -1253,7 +1253,7 @@ header nav ul.user-list .user-name {
   scale: 0.7;
 }
 
-.add-vans span.img-type-error {
+.add-vans span.add-van-errors {
   display: block;
   font-size: 0.7rem;
   color: var(--error-clr) !important;
