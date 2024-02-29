@@ -1,9 +1,12 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import vanImgPlaceholder from "../../assets/imgs/van-img-placeholder.png";
 import { storeNewVanInDB } from "../../api";
 import { AuthContext } from "../../components/AuthProvider";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddVans = () => {
+  const formRef = useRef(null);
   const { user } = useContext(AuthContext);
   const [newVan, setNewVan] = useState({
     imageUrl: null,
@@ -57,35 +60,57 @@ const AddVans = () => {
     }
   };
 
-  console.log(newVan);
+  const notify = () => {
+    toast.success("New van successfully added", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const errors = {};
+
     if (newVan.name === "") {
-      setErrors((prev) => ({ ...prev, name: "Name is required" }));
+      errors.name = "Name is required";
     }
 
     if (newVan.price <= 0) {
-      setErrors((prev) => ({ ...prev, price: "Price is required" }));
+      errors.price = "Price is required";
     }
-    
+
     if (newVan.description === "") {
-      setErrors((prev) => ({
-        ...prev,
-        description: "Description is required",
-      }));
+      errors.description = "Description is required";
     }
+
+    setErrors(errors);
 
     if (Object.keys(errors).length === 0) {
       storeNewVanInDB(user.userId, newVan);
+      formRef.current.reset();
+      setNewVan({
+        imageUrl: null,
+        name: "",
+        price: 0,
+        description: "",
+        type: "simple",
+      });
+      notify();
     }
   };
 
   return (
     <section className="add-vans container">
       <h1>Add new Van</h1>
-      <form action="post" onSubmit={handleSubmit}>
+      <form action="post" onSubmit={handleSubmit} ref={formRef}>
         <label className="choose-van-img">
           <div
             className="img-container"
@@ -191,6 +216,7 @@ const AddVans = () => {
           add van
         </button>
       </form>
+      <ToastContainer></ToastContainer>
     </section>
   );
 };
