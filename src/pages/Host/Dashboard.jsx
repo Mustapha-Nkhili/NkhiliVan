@@ -3,7 +3,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLoaderData, defer, Await } from "react-router-dom";
 import { getHostVans } from "../../api";
-import HostedVansSkeleton from "../../components/skeleton loading/hostedVansSkeleton";
+import HostedVansSkeleton from "../../components/skeleton loading/HostedVansSkeleton";
 
 export function loader() {
   return defer({ vans: getHostVans() });
