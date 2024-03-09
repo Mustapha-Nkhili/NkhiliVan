@@ -647,7 +647,8 @@ header nav ul.user-list .user-name {
 
 .vans-page .vans .van-img {
   width: 100%;
-  max-height: 300px;
+  object-fit: cover;
+  height: 200px;
 }
 
 .vans-page .vans .van-name-price-wrapper {
