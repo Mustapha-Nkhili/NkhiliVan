@@ -1,17 +1,19 @@
 import { useContext, useRef, useState } from "react";
 import vanImgPlaceholder from "../../assets/imgs/van-img-placeholder.png";
-import { storeNewVanInDB } from "../../api";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
+import { nanoid } from "nanoid";
 import { AuthContext } from "../../components/AuthProvider";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddVans = () => {
-  const formRef = useRef(null);
+  const toastId = useRef(null);
   const { user } = useContext(AuthContext);
   const [newVan, setNewVan] = useState({
     imageUrl: null,
     name: "",
-    price: 0,
+    price: null,
     description: "",
     type: "simple",
   });
@@ -60,8 +62,11 @@ const AddVans = () => {
     }
   };
 
-  const notify = () => {
-    toast.success("New van successfully added", {
+  const notify = (toastId, message, type) => {
+    const options = {
+      render: message,
+      type: type,
+      isLoading: false,
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -71,10 +76,12 @@ const AddVans = () => {
       progress: undefined,
       theme: "light",
       transition: Bounce,
-    });
+    };
+
+    toast.update(toastId, options);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const errors = {};
@@ -94,23 +101,44 @@ const AddVans = () => {
     setErrors(errors);
 
     if (Object.keys(errors).length === 0) {
-      storeNewVanInDB(user.userId, newVan);
-      formRef.current.reset();
-      setNewVan({
-        imageUrl: null,
-        name: "",
-        price: 0,
-        description: "",
-        type: "simple",
-      });
-      notify();
+      try {
+        toastId.current = toast.loading("Please wait...");
+
+        const result = await setDoc(doc(db, "vans", nanoid()), {
+          name: newVan.name,
+          description: newVan.description,
+          hostId: user.userId,
+          price: newVan.price,
+          imageUrl: newVan.imageUrl,
+          type: newVan.type,
+        });
+
+        notify(toastId.current, "New van successfully added", "success");
+
+        setNewVan({
+          imageUrl: null,
+          name: "",
+          price: null,
+          description: "",
+          type: "simple",
+        });
+
+        return result;
+      } catch (error) {
+        notify(
+          toastId.current,
+          "Image size limit exceeded! Max: 1MB. Try compressing or selecting a smaller file",
+          "error"
+        );
+        setNewVan(prev => ({...prev, imageUrl: null}))
+      }
     }
   };
 
   return (
     <section className="add-vans container">
       <h1>Add new Van</h1>
-      <form action="post" onSubmit={handleSubmit} ref={formRef}>
+      <form action="post" onSubmit={handleSubmit}>
         <label className="choose-van-img">
           <div
             className="img-container"
@@ -146,6 +174,7 @@ const AddVans = () => {
             name="name"
             id="vanName"
             placeholder="Enter van name"
+            value={newVan.name}
             onChange={handleNewVanChanges}
           />
           {errors.name && <span className="add-van-errors">{errors.name}</span>}
@@ -157,6 +186,7 @@ const AddVans = () => {
             name="price"
             id="vanPrice"
             placeholder="Enter van price"
+            value={newVan.price}
             onChange={handleNewVanChanges}
           />
           {errors.price && (
@@ -170,6 +200,7 @@ const AddVans = () => {
             id="vanDescription"
             rows="4"
             placeholder="Enter the description"
+            value={newVan.description}
             onChange={handleNewVanChanges}
           ></textarea>
           {errors.description && (

@@ -79,18 +79,3 @@ export async function getUser(userId) {
     console.error(error);
   }
 }
-
-export async function storeNewVanInDB(userId, newVan) {
-  try {
-    await setDoc(doc(db, "vans", nanoid()), {
-      name: newVan.name,
-      description: newVan.description,
-      hostId: userId,
-      price: newVan.price,
-      imageUrl: newVan.imageUrl,
-      type: newVan.type,
-    });
-  } catch (error) {
-    console.error(error);
-  }
-}
