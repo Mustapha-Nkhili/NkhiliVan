@@ -151,7 +151,7 @@ const AddVans = () => {
             />
           </div>
           <p>Click to upload image</p>
-          <span>JPG, PNG, SVG (2MB max)</span>
+          <span>JPG, PNG, SVG (1MB max)</span>
           {errors.imgType && (
             <span className="add-van-errors">
               Sorry, we couldn't process your file. It appears that the file you
